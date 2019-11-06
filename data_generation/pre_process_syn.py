@@ -17,7 +17,7 @@ import time
 
 final_res = (572, 572)
 file_name_list = []
-file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/austin2.2/raw/'
+file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/austin2.8/raw/'
 city_name = 'Austin'
 
 
@@ -27,7 +27,7 @@ def num_2_str(num):
     num2c = dict(zip(num_list, c_list))
     return ''.join([num2c[e_n] for e_n in num])
 
-def reject_patch(patch, threshold=0.5):
+def reject_patch(patch, threshold=0.1):
     return np.mean(np.sum(patch,axis=-1) == 255*3) > threshold
 
 start_time = time.time()
