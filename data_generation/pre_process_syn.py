@@ -15,7 +15,7 @@ import numpy as np
 import re
 import time
 
-final_res = (572, 572)
+final_res = (650, 650)
 file_name_list = []
 file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/austin2.8/raw/'
 city_name = 'Austin'
