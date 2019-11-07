@@ -9,6 +9,7 @@ Created on 06.26.2019
 from scripting import *
 import time
 import random
+import math
 # get a CityEngine instance
 ce = CE()
 
@@ -33,7 +34,7 @@ def dynamic_attributes(adjust_list, camera_angle, light_angle, light_intensity, 
         camera_angle = '-' + str(camera_angle)
     if 'li' in adjust_list:
         light_intensity = min(1, light_intensity + 0.1 * random.randint(-int(10*dynamic_range['li']), int(10*dynamic_range['li'])))
-        lightSettings.setSolarIntensity(light_intensity)    
+        lightSettings.setSolarIntensity(light_intensity)
     if mode == 'GT':
         return camera_angle
     ce.setLighting(lightSettings)
@@ -58,7 +59,7 @@ def parseLine(lines, id):
             break
     if data:
         data = data[:len(data)-1] # strip \n
-        data = data.split(",")        
+        data = data.split(",")
     return data
 
 '''
@@ -73,17 +74,14 @@ def parseFbxCam(filename):
     return [loc,rot]
 
 
-
 '''
 helper functions
 '''
 def setCamPosV(v, vec):
     v.setCameraPosition(vec[0], vec[1], vec[2])
-    
+
 def setCamRotV(v, vec):
     v.setCameraRotation(vec[0], vec[1], vec[2])
-
-
 
 '''
 sets camera on first CE viewport
@@ -94,19 +92,25 @@ def setCamData(data):
     setCamRotV(v, data[1])
     return v
 
-
-
+def setCamHeight(FOV=15, tile_width=650, resolution=0.3):
+    '''
+    Calculates proper height of camera in CityEngine based on current camera
+    used (FOV in degrees), desired tile size, and desired resolution
+    '''
+    FOV = math.radians(FOV)
+    d = tile_width * resolution #pixel width of tile * resolution in m/pixel
+    return str(d / (2*math.tan(FOV/2)))
 
 
 '''
 master function
 '''
 def importFbxCamera(fbxfile, axis, angle, height):
-    
+
     data = parseFbxCam(fbxfile)
     if(data[0] and data[1]) :
         data[0][0]=str(axis[0])
-        data[0][1] = height 
+        data[0][1] = height
         data[0][2]= str(axis[1])
         data[1][0] = data[1][1] = angle
         v = setCamData(data)
@@ -117,84 +121,86 @@ def importFbxCamera(fbxfile, axis, angle, height):
 
 def exportImages(directory, v, Tag=""):
    path = directory + "/_" + Tag + "_RGB.jpg"
-   v.snapshot(path, width = 572, height = 572)
+   v.snapshot(path, width = 650, height = 650)
 
 def exportGroundtruths(directory, v, Tag=""):
     path = directory + "/_" + Tag + "_GT.jpg"
-    v.snapshot(path, width = 572, height = 572)
-   
+    v.snapshot(path, width = 650, height = 650)
+
 def exportGroundtruths2(directory, v, Tag=""):
    path = directory + "/_" + Tag + "_GT2.jpg"
    v.snapshot(path)
 
 def loop_capturer_dynamic_attributes(start_axis, step, end_axis, tag,
                                      adjust_list = ['la', 'ca', 'li'],
-                                     light_angle = 90, light_intensity=1, 
+                                     light_angle = 90, light_intensity=1,
                                      dynamic_range={'ca': 10, 'la': 10, 'li': 0.2},
-                                     camera_angle=90, height='340',mode='RGB'):
-    counter = 475
+                                     camera_angle=90, height='651.7',mode='RGB'):
+    counter = 0
     print('Start Shooting!')
     print(start_axis[0], end_axis[0], step)
     for i in drange(start_axis[0], end_axis[0], step):
         for j in drange(start_axis[1], end_axis[1], step):
             camfile = ce.toFSPath("data/camera.fbx")
-            
+
             angle = dynamic_attributes(adjust_list, camera_angle, light_angle, light_intensity, dynamic_range, mode)
             view = importFbxCamera(camfile, (i, j), angle, height)
             counter += 1
             print(counter)
             time.sleep(0.02)
             if mode == 'RGB':
-                exportImages(ce.toFSPath('images'), view, Tag=tag+'_'+str(counter))
+                exportImages(ce.toFSPath('images/testingPatchSize'), view, Tag=tag+'_'+str(counter))
             elif mode == 'GT':
                 lightSettings = ce.getLighting()
                 lightSettings.setSolarElevationAngle(90)
-                lightSettings.setSolarIntensity(1)    
+                lightSettings.setSolarIntensity(1)
                 ce.setLighting(lightSettings)
-                ce.waitForUIIdle() 
-                exportGroundtruths(ce.toFSPath('images'), view, Tag=tag+'_'+str(counter))
+                ce.waitForUIIdle()
+                exportGroundtruths(ce.toFSPath('images/testingPatchSize'), view, Tag=tag+'_'+str(counter))
             elif mode == 'GT2':
                 lightSettings = ce.getLighting()
                 lightSettings.setSolarElevationAngle(90)
-                lightSettings.setSolarIntensity(1)    
+                lightSettings.setSolarIntensity(1)
                 ce.setLighting(lightSettings)
-                exportGroundtruths2(ce.toFSPath('images'), view, Tag=tag+'_'+str(counter)) #break
+                exportGroundtruths2(ce.toFSPath('images/testingPatchSize'), view, Tag=tag+'_'+str(counter)) #break
 
 def load_rule_file(rule_file_path, objs):
     all_shapes = ce.getObjectsFrom(ce.scene, objs)
     ce.setRuleFile(all_shapes, rule_file_path)
     ce.generateModels(all_shapes)
-    ce.waitForUIIdle() 
-                    
+    ce.waitForUIIdle()
+
 if __name__ == '__main__':
     '''
     shoot each location with a combination of randomized parameters in a range
-    eg: 
+    eg:
     adjust_list = ['la', 'ca', 'li'], # list of parameters to be randomized
     light_angle=45,  camera_angle=80, light_intensity=0.8,  # centers of the range
     dynamic_range={'ca': 10, 'la': 15, 'li': 0.3} # the width of the range
-    
+
     This set of parameters means shoot an image
      where camera angle is a random number in [70, 90],
      light angle is a random number in [30, 60],
-     light intensity is a random number in [0.5, 1] 
-    
+     light intensity is a random number in [0.5, 1]
+
     '''
+
     random.seed(1)
     start_time = time.time()
     #load_rule_file('Vienna.cga', ce.isShape)
-    #loop_capturer_dynamic_attributes(start_axis=(601101, -5336980), step=182, end_axis=(602515,-5335450), 
-     #                                tag='Vienna_1', adjust_list = ['la', 'ca', 'li'],
-     #                                light_angle=45,  camera_angle=80, light_intensity=0.8, 
-     #                                dynamic_range={'ca': 10, 'la': 15, 'li': 0.3},
-     #                                height='175', mode='RGB')
+
+    loop_capturer_dynamic_attributes(start_axis=(-1600, 0), step=182, end_axis=(800, 1800),
+                                     tag='Austin2', adjust_list = ['la', 'ca', 'li'],
+                                     light_angle=60,  camera_angle=90, light_intensity=1,
+                                     dynamic_range={'ca': 0.0, 'la': 0, 'li': 0.0},
+                                     height=setCamHeight(), mode='RGB')
     #load_rule_file('Vienna_labeling.cga', ce.isShape)
     #random.seed(1)
-    loop_capturer_dynamic_attributes(#start_axis=(597124, -5342707), step=182, end_axis=(601577,-5339250), 
-                                     start_axis = (599089, -5345173), step = 182, end_axis = (600761, -5343973), 
-                                     tag='Vienna_1', adjust_list = ['la', 'ca', 'li'],
-                                     light_angle=60, #CHANGE TO 60 FOR RGB, 90 WHEN GT
-                                     camera_angle=90, light_intensity=1, 
+    '''
+    loop_capturer_dynamic_attributes(start_axis=(-1600, 0), step=182, end_axis=(800, 1800),
+                                     tag='Austin2', adjust_list = ['la', 'ca', 'li'],
+                                     light_angle=90, camera_angle=90, light_intensity=1,
                                      dynamic_range={'ca': 0, 'la': 0, 'li': 0},
-                                     height='651.7', mode='RGB') 
+                                     height=setCamHeight(), mode='GT')
+    '''
     print('Duration: {}'.format(time.time()-start_time))

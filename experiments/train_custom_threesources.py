@@ -3,7 +3,7 @@ Created on 07/01/2019
 Andy Yang
 """
 import sys
-sys.path.append('/hdd/data+/Varun/uab_data_plus/')
+sys.path.append('/home/vbn4/uab_data_plus/')
 import os
 import time
 import numpy as np
@@ -34,11 +34,11 @@ epochs = 90                    # total number of epochs to run
 start_filter_num = 32           # the number of filters at the first layer
 n_train = 1000                  # number of samples per epoch
 n_valid = 200                   # number of samples every validation step
-GPU = 0                   # which gpu to use, remember to set to None if you don't know which one to use
+GPU = 1                   # which gpu to use, remember to set to None if you don't know which one to use
 source_num = 3
 source_control = [2,2,1]
-model_name = 'synthetic.group_Austin'
-pretrained_model_dir = '/hdd/data+/Paul/uab_data_plus/bohaoCustom/resnet_v1_101.ckpt'
+model_name = 'synAustin_trial1'
+pretrained_model_dir = '/home/vbn4/uab_data_plus/bohaoCustom/resnet_v1_101.ckpt'
 # make network
 # define place holder
 X = tf.placeholder(tf.float32, shape=[None, chip_size[0], chip_size[1], 3], name='X')
@@ -157,7 +157,7 @@ with tf.name_scope('image_loader'):
 #### Synthetic #####
 # create collection
 # the original file is in /ei-edl01/data/uab_datasets/inria
-blCol = uab_collectionFunctions.uabCollection('sAustin2.3')
+blCol = uab_collectionFunctions.uabCollection('sAustin2.5')
 opDetObj = bPreproc.uabOperTileDivide(255)          # inria GT has value 0 and 255, we map it back to 0 and 1
 # [3] is the channel id of GT
 rescObj = uabPreprocClasses.uabPreprocMultChanOp([], 'GT_Divide.tif', 'Map GT to (0, 1)', [3], opDetObj)
