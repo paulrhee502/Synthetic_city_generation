@@ -17,6 +17,7 @@ import time
 
 final_res = (650, 650)
 file_name_list = []
+#needs to have a trailing "/"
 file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/austin2.8/raw/'
 city_name = 'Austin'
 
@@ -27,7 +28,7 @@ def num_2_str(num):
     num2c = dict(zip(num_list, c_list))
     return ''.join([num2c[e_n] for e_n in num])
 
-def reject_patch(patch, threshold=0.1):
+def reject_patch(patch, threshold=0.1): #input threshold is amount of white in RGB file
     return np.mean(np.sum(patch,axis=-1) == 255*3) > threshold
 
 start_time = time.time()
@@ -58,7 +59,7 @@ for file in glob.glob(file_path + "*RGB.jpg"):
     img_RGB = img[:t_shape, :t_shape, :]
     img_RGB = smc.imresize(img_RGB, final_res, interp='bilinear')
 
-    if reject_patch(img_RGB): #if less than 50% of patch is city
+    if reject_patch(img_RGB): #if less than 90% of patch is city
         print('Too much of patch is on edge')
         continue
     else:
