@@ -36,4 +36,4 @@ def cropInriaOverlap(dir_path, save_dir):
                 cropped_image.save(join(save_dir, fil[0:splitIndex] + "_" + str(index) + fil[splitIndex:extIndex] + ".tif"))
 
 if __name__ == '__main__':
-    cropInriaOverlap("/hdd/data+/Source/inria/data/Original_Tiles", "/hdd/data+/Source/inria_cropped_tif/data/Original_Tiles")
+    cropInriaOverlap("/hdd/data+/Source/inriaNew/data/Original_Tiles", "/hdd/data+/Source/inriaNew1/data/Original_Tiles")
