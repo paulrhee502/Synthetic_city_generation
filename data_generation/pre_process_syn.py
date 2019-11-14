@@ -1,6 +1,6 @@
 '''
-@Author: Fanjie Kong
-Create on 03/20/2019
+@Author: Varun Nair
+Create on 11/07/2019
 
 Binarizing the synthetic label
     1. Truncate them to square
@@ -10,14 +10,15 @@ Binarizing the synthetic label
 '''
 
 import glob, os
-import scipy.misc as smc
 import numpy as np
 import re
 import time
+import cv2 as cv
+from PIL import Image
 
 final_res = (650, 650)
 #needs to have a trailing "/"
-file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/road_patches/test_env/'
+file_path = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/road_patches/test_env2/'
 city_name = 'Austin'
 
 
@@ -31,15 +32,21 @@ def reject_patch(patch, threshold=0.1): #input threshold is amount of white in R
     return np.mean(np.sum(patch,axis=-1) == 255*3) > threshold
 
 def binarize(file_path, city_name, mode='buildings'):
+    '''
+    Function reads list of tile pairs in directory and creates GTs
+    @param file_path: directory with RGB and GT tiles
+    @param city_name: name of city imagery is for
+    @param mode: takes either 'buildings' or 'roads' to read in GTs differently
+    '''
     colTileNames = []
 
     for file in glob.glob(file_path + "*RGB.jpg"):
-        img = smc.imread(file)
+        img = np.array(Image.open(file))
 
         if mode == 'buildings':
-            img_gt = smc.imread(file.replace('RGB', 'GT'))
+            img_gt = np.array(Image.open(file.replace('RGB', 'GT')))
         elif mode == 'roads':
-            img_gt = smc.imread(file.replace('RGB', 'GT2'))
+            img_gt = np.array(Image.open(file.replace('RGB', 'GT2')))
 
         t_shape = min(img.shape[0], img.shape[1])
 
@@ -67,19 +74,32 @@ def binarize(file_path, city_name, mode='buildings'):
                     else:
                         img_GT[i, j] = 255
 
-        img_GT = smc.imresize(img_GT, final_res, interp='nearest')
+        #fills in spots of unlabeled road/building in GTs
+        kernel = np.ones((1,1), np.uint8)
+        img_GT = cv.morphologyEx(img_GT, cv.MORPH_CLOSE, kernel)
+
+        #img_GT = morphology.binary_closing(img_GT) #from skimage import morphology
+
+        img_GT = np.array(Image.fromarray(img_GT).resize(final_res,
+                            resample=Image.NEAREST))
 
         img_RGB = img[:t_shape, :t_shape, :]
-        img_RGB = smc.imresize(img_RGB, final_res, interp='bilinear')
+        img_RGB = np.array(Image.fromarray(img_RGB).resize(final_res,
+                            resample=Image.BILINEAR))
 
         if reject_patch(img_RGB): #if less than 90% of patch is city
             print('Too much of patch is on edge')
             continue
         else:
-            smc.imsave(city_name + '_' + num_2_str(num[0]) + '_' + num[1] + '_RGB.tif'
-                       , img_RGB)
-            smc.imsave(city_name + '_' + num_2_str(num[0]) + '_' + num[1] + '_GT.tif'
-                       , img_GT)
+            img_RGB = Image.fromarray(img_RGB)
+            img_GT = Image.fromarray(img_GT)
+
+            img_RGB.save(city_name + '_' + num_2_str(num[0]) + '_' + num[1] + '_RGB.tif')
+            if mode == 'buildings':
+                img_GT.save(city_name + '_' + num_2_str(num[0]) + '_' + num[1] + '_GT.tif')
+            elif mode == 'roads':
+                img_GT.save(city_name + '_' + num_2_str(num[0]) + '_' + num[1] + '_GT2.tif')
+
         colTileNames.append(city_name + '_' + num_2_str(num[0]) + '_' + num[1])
     return colTileNames
 
