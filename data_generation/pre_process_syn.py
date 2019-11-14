@@ -25,8 +25,7 @@ def num_2_str(num):
     return ''.join([num2c[e_n] for e_n in num])
 
 def reject_patch(patch, threshold=0.1):
-    '''
-    Decides whether to keep a patch based on amount of white in tile
+    '''Decides whether to keep a patch based on amount of white in tile
     @param patch: RGB image to be checked
     @param threshold: in [0,1], lower is stricter amount of white in RGB
     '''
