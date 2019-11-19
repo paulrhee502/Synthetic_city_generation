@@ -11,7 +11,7 @@ These scripts primarily involve the creation of synthetic data by interfacing wi
 
 3. **randomizer.py** is used if only a subset of patches generated are needed or if you need to remake *colTileNames.txt*.
 
-4. **crop.py** is used on rela data from Inria as those tiles are 5000x5000 compared to DeepGlobe and synthetic tiles that are 572x572.
+4. **crop.py** is used on real data from Inria as those tiles are 5000x5000 compared to DeepGlobe and synthetic tiles that are 572x572.
 
 
 ### experiments
