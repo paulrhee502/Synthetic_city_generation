@@ -79,7 +79,7 @@ def binarize(src_dir, city_name, imageSize=(650,650), mode='buildings'):
         kernel = np.ones((1,1), np.uint8)
         img_GT = cv.morphologyEx(img_GT, cv.MORPH_CLOSE, kernel)
 
-        #img_GT = morphology.binary_closing(img_GT) #from skimage import morphology
+        #img_GT = morphology.binary_closing(img_GT, selem = kernel) #from skimage import morphology
 
         img_GT = np.array(Image.fromarray(img_GT).resize(imageSize,
                             resample=Image.NEAREST))
