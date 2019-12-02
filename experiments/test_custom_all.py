@@ -23,7 +23,7 @@ source_num = 1
 
 tf.reset_default_graph()        # reset the graph before you start
 # this is where I have my pretrained model
-model_dir = r'/hdd/data+/Paul/Models/DeeplabV3_sVienna_650a_PS(286, 286)_BS5_EP100_LR5e-05_DS50_DR0.1_SFN32'
+model_dir = r'/hdd/data+/Paul/Models/DeeplabV3_sAustin_650a_PS(286, 286)_BS5_EP100_LR5e-05_DS50_DR0.1_SFN32'
 # make the model, same as training
 X = tf.placeholder(tf.float32, shape=[None, input_size[0], input_size[1], 3], name='X')
 y = tf.placeholder(tf.int32, shape=[None, input_size[0], input_size[1], 1], name='y')
@@ -70,7 +70,7 @@ model.evaluate_e_city(file_list_valid,                 # list of lists, each inn
                gpu=gpu,                         # which gpu to use
                save_result=True,                # if true, results will be saved in uabRepoPaths.evalPath in a folder by
                                                 # its model name as a text file where each line is the IoU stats
-               save_result_parent_dir='sVienna',     # if not None, a folder will be create in uabRepoPaths.evalPath, this is
+               save_result_parent_dir='sAustin',     # if not None, a folder will be create in uabRepoPaths.evalPath, this is
                                                 # helpful when you score a bunch of models and make them more organized
                show_figure=True,               # if true, the prediction maps will be plotted after each iteration
                verb=True,                       # if true, the IoU and run duration will be printed

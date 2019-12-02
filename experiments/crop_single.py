@@ -13,4 +13,4 @@ def crop(imagePath, cor = (2500,0), newSize=(2000,2000)):
     image.save(imagePath.replace('.jpg','_crop.jpg'))
 
 if __name__ == '__main__':
-    crop('/Users/Varun/Documents/CityEngine/Synthetic_city_generation/test4.jpg')
+    crop('/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/accuracy/R0+syn/vienna1_RGB.jpg')
