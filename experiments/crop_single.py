@@ -1,6 +1,6 @@
 from PIL import Image
 
-def crop(imagePath, cor = (2500,0), newSize=(2000,2000)):
+def crop(imagePath, cor = (3500,1000), newSize=(1000,1000)):
     """Defines a function to crop a single segment out of an image
     @param: imagePath specifies image to crop
     @param cor: upper left corner to start crop from
@@ -13,4 +13,4 @@ def crop(imagePath, cor = (2500,0), newSize=(2000,2000)):
     image.save(imagePath.replace('.jpg','_crop.jpg'))
 
 if __name__ == '__main__':
-    crop('/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/accuracy/R0+syn/vienna1_RGB.jpg')
+    crop('/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/accuracy/R0/vienna1_performance.jpg')
