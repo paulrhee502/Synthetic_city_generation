@@ -2,7 +2,8 @@
 @Author: Varun Nair
 Create on 11/29/2019
 
-This code includes functions for making visual maps of model predctions vs. GTs
+This code includes functions for making visual maps of model predictions vs GTs
+in different colors depending on type of error/non-error
 '''
 
 import glob, os
