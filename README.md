@@ -21,3 +21,7 @@ These scripts primarily involve the creation of synthetic data by interfacing wi
 2. **test_custom_all.py** tests the above trained model on real images.
 
 3. **iou.py** calculates either a pure average or weighted IoU for a given output result file from testing.
+
+4. **crop_single.py** crops a single image based on given corner to start cropping at and desired subsection. Useful for zooming in on maps created by *visualize_predictions.py*
+
+5. **visualize_predictions.py** allows the user to automatically compare model predictions to ground truths and then map the difference in color. Different types of errors are displayed in different colors, so you can visually compare performance.
