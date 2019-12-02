@@ -40,5 +40,5 @@ def weightedIoUs(result_path):
 
 if __name__ == '__main__':
     #calculateIoUs("/Users/paulrhee/Desktop/example.txt")
-    weightedIoUs("/Users/Varun/Documents/CityEngine/Synthetic_city_generation/experiments/results/sV_result2.txt")
+    weightedIoUs('/Users/Varun/Documents/CityEngine/Synthetic_city_generation/experiments/results/sA_result.txt')
     #calculateIoUs("/Users/paulrhee/Desktop/Data+/result.txt")
