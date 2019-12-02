@@ -4,19 +4,26 @@ from os.path import isfile, join, splitext
 import random
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-def cropInria(dir_path, save_dir):
+def randomCrop(dir_path, save_dir, crop_w, crop_h):
     """
     @param dir_path: The path to the directory with imgaes from Inria dataset (5000x5000)
     @param save_dir: Path to the directory to which the cropped images will be saved
+    @param crop_w, crop_h: Desired width/height respectively after crop
+    return: cropped images in save_dir 
     """
     corners = {} #dictionary that holds the randomly selected corners for each tile so RGB and GT use the same corner
     for fil in [f for f in listdir(dir_path) if isfile(join(dir_path, f)) and splitext(f)[1] == ".tif"]:
         print(fil)
         image_obj = Image.open(join(dir_path, fil))
+        original_w, original_h = image_obj.size
+        print("ORIGINAL SIZE: " + str(original_w) + " " + str(original_h))
+        if(original_w < crop_w or original_h < crop_h):
+            print("Desired cropped image dimensions are larger than the original image")
+            continue
         tile = fil.split("_")[0]
         if(tile not in corners):
-            corners[tile] = (random.randint(0,4429), random.randint(0,4429))
-        cropped_image = image_obj.crop((corners[tile][0], corners[tile][1], corners[tile][0] + 572, corners[tile][1] + 572))#Produces a 572x572 image from cropping 5000x5000 inria image
+            corners[tile] = (random.randint(0,original_w - crop_w), random.randint(0,original_h - crop_h))
+        cropped_image = image_obj.crop((corners[tile][0], corners[tile][1], corners[tile][0] + crop_w, corners[tile][1] + crop_h))
         cropped_image.save(join(save_dir, splitext(fil)[0] + ".tif"))
 
 def cropInriaOverlap(dir_path, save_dir):
@@ -36,4 +43,5 @@ def cropInriaOverlap(dir_path, save_dir):
                 cropped_image.save(join(save_dir, fil[0:splitIndex] + "_" + str(index) + fil[splitIndex:extIndex] + ".tif"))
 
 if __name__ == '__main__':
-    cropInriaOverlap("/hdd/data+/Source/inriaNew/data/Original_Tiles", "/hdd/data+/Source/inriaNew1/data/Original_Tiles")
+    #cropInriaOverlap("/hdd/data+/Source/inria/data/Original_Tiles", "/hdd/data+/Source/inria_cropped_tif/data/Original_Tiles")
+    randomCrop('/Users/paulrhee/Desktop/example_source/', '/Users/paulrhee/Desktop/example_dest/', 572, 572)
