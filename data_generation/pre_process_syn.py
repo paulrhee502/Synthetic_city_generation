@@ -108,10 +108,10 @@ def binarize(src_dir, city_name, imageSize=(650,650), mode='buildings'):
 start_time = time.time()
 final_res = (650, 650)
 #needs to have a trailing "/"
-dir = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/road_patches/test_env2/'
+dir = '/Users/Varun/Documents/CityEngine/Default Workspace/c3/images/austin_nT5/raw/'
 city = 'Austin'
 
-file_name_list = binarize(dir, city, imageSize = final_res, mode='roads')
+file_name_list = binarize(dir, city, imageSize = final_res, mode='buildings')
 
 print(file_name_list)
 np.savetxt('colTileNames.txt', np.array(file_name_list), fmt='%s', delimiter='\n')
