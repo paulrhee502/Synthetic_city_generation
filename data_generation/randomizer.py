@@ -73,9 +73,13 @@ def randomize_colTiles(src_file, dst_file):
         for file in randomList:
             f.write("%s\n" % file)
 
-def make_GTlist():
+def make_fileList():
     files = [f for f in os.listdir('.') if (os.path.isfile(f) and 'GT' in f)]
-    with open('files.txt', 'w') as f:
+    with open('GT_files.txt', 'w') as f:
+        for file in files:
+            f.write(str(file) + '\n')
+    files = [f for f in os.listdir('.') if (os.path.isfile(f) and 'RGB' in f)]
+    with open('RGB_files.txt', 'w') as f:
         for file in files:
             f.write(str(file) + '\n')
 
@@ -84,5 +88,5 @@ if __name__ == '__main__':
 
     #randomize_colTiles('/hdd/data+/Source/testing_set/meta_data/colTileNames.txt',\
     #'/hdd/data+/Source/testing_set/meta_data/colTileNames.txt')
-    #make_GTlist()
-    make_colTiles()
+    make_fileList()
+    #make_colTiles()

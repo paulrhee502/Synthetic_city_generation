@@ -1,6 +1,6 @@
 """
 Created on 06/01/2019
-Fanjie Kong
+Varun Nair
 """
 import sys
 sys.path.append('/hdd/data+/Paul/uab_data_plus/')
@@ -70,7 +70,7 @@ model.evaluate_e_city(file_list_valid,                 # list of lists, each inn
                gpu=gpu,                         # which gpu to use
                save_result=True,                # if true, results will be saved in uabRepoPaths.evalPath in a folder by
                                                 # its model name as a text file where each line is the IoU stats
-               save_result_parent_dir='sAustin',     # if not None, a folder will be create in uabRepoPaths.evalPath, this is
+               save_result_parent_dir='sVienna',     # if not None, a folder will be create in uabRepoPaths.evalPath, this is
                                                 # helpful when you score a bunch of models and make them more organized
                show_figure=True,               # if true, the prediction maps will be plotted after each iteration
                verb=True,                       # if true, the IoU and run duration will be printed

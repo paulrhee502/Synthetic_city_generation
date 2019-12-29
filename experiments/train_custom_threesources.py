@@ -3,7 +3,7 @@ Created on 07/01/2019
 Andy Yang
 """
 import sys
-sys.path.append('/home/vbn4/uab_data_plus/')
+sys.path.append('/home/pkr10/Paul/uab_data_plus/')
 import os
 import time
 import numpy as np
@@ -21,24 +21,24 @@ random.seed(1)
 tf.set_random_seed(1)
 np.random.seed(1)
 # experiment settings
-chip_size = (286, 286)          # image will be extracted to this size
-tile_size = (5000, 5000)        # size of the original image
-chip_size2 = (286, 286)          # image will be extracted to this size
-tile_size2 = (572, 572)
+chip_size = (572, 572)          # image will be extracted to this size
+tile_size = (572, 572)        # size of the original image
+#chip_size2 = (650, 650)          # image will be extracted to this size
+tile_size2 = (650, 650)
 batch_size = 5                 # mini-batch size
 class_num = 2
 learn_rate = 5e-5               # learning rate
-decay_step = 50                 # learn rate dacay after 60 epochs
+decay_step = 50                 # learn rate dacay after 50 epochs
 decay_rate = 0.1                # learn rate decay to 0.1*before
-epochs = 90                    # total number of epochs to run
+epochs = 100                    # total number of epochs to run
 start_filter_num = 32           # the number of filters at the first layer
-n_train = 1000                  # number of samples per epoch
-n_valid = 200                   # number of samples every validation step
-GPU = 1                   # which gpu to use, remember to set to None if you don't know which one to use
+n_train = 9000                  # number of samples per epoch
+n_valid = 2000                   # number of samples every validation step
+GPU = 0                   # which gpu to use, remember to set to None if you don't know which one to use
 source_num = 3
 source_control = [2,2,1]
-model_name = 'synAustin_trial1'
-pretrained_model_dir = '/home/vbn4/uab_data_plus/bohaoCustom/resnet_v1_101.ckpt'
+model_name = 'rAustin_650_572patch1'
+pretrained_model_dir = '/home/pkr10/Paul/uab_data_plus/bohaoCustom/resnet_v1_101.ckpt'
 # make network
 # define place holder
 X = tf.placeholder(tf.float32, shape=[None, chip_size[0], chip_size[1], 3], name='X')
@@ -63,7 +63,7 @@ model.create_graph('X', class_num=class_num)                                    
 # the original file is in /ei-edl01/data/uab_datasets/inria
 # create collection
 # the original file is in /ei-edl01/data/uab_datasets/inria
-blCol = uab_collectionFunctions.uabCollection('inria')
+blCol = uab_collectionFunctions.uabCollection('inriaNew2')
 opDetObj = bPreproc.uabOperTileDivide(255)          # inria GT has value 0 and 255, we map it back to 0 and 1
 # [3] is the channel id of GT
 rescObj = uabPreprocClasses.uabPreprocMultChanOp([], 'GT_Divide.tif', 'Map GT to (0, 1)', [3], opDetObj)
@@ -111,7 +111,7 @@ with tf.name_scope('image_loader'):
 # the original file is in /ei-edl01/data/uab_datasets/inria
 # create collection
 # the original file is in /ei-edl01/data/uab_datasets/inria
-blCol = uab_collectionFunctions.uabCollection('deepglobe')
+blCol = uab_collectionFunctions.uabCollection('deepglobeNew')
 opDetObj = bPreproc.uabOperTileDivide(255)          # inria GT has value 0 and 255, we map it back to 0 and 1
 # [3] is the channel id of GT
 rescObj = uabPreprocClasses.uabPreprocMultChanOp([], 'GT_Divide.tif', 'Map GT to (0, 1)', [3], opDetObj)
@@ -148,7 +148,7 @@ file_list_train123 = uabCrossValMaker.make_file_list_by_key(idx, file_list, [i f
 
 with tf.name_scope('image_loader'):
     # GT has no mean to subtract, append a 0 for block mean
-    dataReader_train2 = uabDataReader.ImageLabelReader([3], [0, 1, 2], patchDir, file_list_train123, chip_size2, tile_size2,
+    dataReader_train2 = uabDataReader.ImageLabelReader([3], [0, 1, 2], patchDir, file_list_train123, chip_size, tile_size2,
                                                       source_control[1], dataAug='flip,rotate',
                                                       block_mean=np.append([0], img_mean))
     # no augmentation needed for validation
@@ -157,7 +157,7 @@ with tf.name_scope('image_loader'):
 #### Synthetic #####
 # create collection
 # the original file is in /ei-edl01/data/uab_datasets/inria
-blCol = uab_collectionFunctions.uabCollection('sAustin2.5')
+blCol = uab_collectionFunctions.uabCollection('rAustin_650')
 opDetObj = bPreproc.uabOperTileDivide(255)          # inria GT has value 0 and 255, we map it back to 0 and 1
 # [3] is the channel id of GT
 rescObj = uabPreprocClasses.uabPreprocMultChanOp([], 'GT_Divide.tif', 'Map GT to (0, 1)', [3], opDetObj)
@@ -190,7 +190,7 @@ file_list_train_Syn= uabCrossValMaker.make_file_list_by_key(idx, file_list, [i f
 
 with tf.name_scope('image_loader'):
     # GT has no mean to subtract, append a 0 for block mean
-    dataReader_train3 = uabDataReader.ImageLabelReader([3], [0, 1, 2], patchDir, file_list_train_Syn, chip_size2, tile_size2,
+    dataReader_train3 = uabDataReader.ImageLabelReader([3], [0, 1, 2], patchDir, file_list_train_Syn, chip_size, tile_size2,
                                                        source_control[2], dataAug='flip,rotate',
                                                        block_mean=np.append([0], img_mean))
 

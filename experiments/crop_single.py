@@ -1,3 +1,8 @@
+"""
+Author: Varun Nair
+Date:
+"""
+
 from PIL import Image
 
 def crop(imagePath, cor = (3500,1000), newSize=(1000,1000)):
